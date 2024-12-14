@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hot and Cold Game</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: blue;
+            color: blue;
+            font-family: Arial, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: bold;
+            user-select: none;
+        }
+
+        #hidden-button {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: black;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div id="message">So, what about Fiji?</div>
+    <button id="hidden-button"></button>
+
+    <script>
+        const body = document.body;
+        const button = document.getElementById('hidden-button');
+        const message = document.getElementById('message');
+
+        // Randomize button position
+        const buttonX = Math.random() * (window.innerWidth - 50);
+        const buttonY = Math.random() * (window.innerHeight - 50);
+        button.style.left = `${buttonX}px`;
+        button.style.top = `${buttonY}px`;
+
+        // Change background and text visibility based on proximity
+        body.addEventListener('mousemove', (event) => {
+            const distance = Math.sqrt(
+                Math.pow(event.clientX - (buttonX + 25), 2) +
+                Math.pow(event.clientY - (buttonY + 25), 2)
+            );
+
+            const maxDistance = Math.sqrt(
+                Math.pow(window.innerWidth, 2) +
+                Math.pow(window.innerHeight, 2)
+            );
+
+            // Calculate intensity
+            const intensity = 1 - Math.min(distance / maxDistance, 1);
+            const red = Math.floor(255 * intensity);
+            const blue = Math.floor(255 * (1 - intensity));
+
+            body.style.backgroundColor = `rgb(${red}, 0, ${blue})`;
+            message.style.color = `rgb(${red}, 0, ${blue})`;
+
+            // Reveal button when close enough
+            if (intensity > 0.9) {
+                button.style.visibility = 'visible';
+            }
+        });
+
+        // Button click event
+        button.addEventListener('click', () => {
+            message.textContent = "You found the button! So, what about Fiji?";
+            message.style.color = "white"; // Ensure the message is visible on a red background
+        });
+    </script>
+</body>
+</html>
